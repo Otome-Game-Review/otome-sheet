@@ -589,9 +589,11 @@ function generate() {
         const rightAreaW = W - starX - 50;
         const colMid = rightAreaX + Math.floor(rightAreaW / 2);
 
-        // 見出しY・データ開始Yを分けて管理
-        const headerY = imgY + 8;        // 見出し「♡ 満足度」「♡ 攻略順」のY
-        const dataStartY = headerY + 30; // 星データ・攻略順テキストの開始Y（完全に同じ）
+        // 満足度エリアの高さを計算して画像の縦中央に配置
+        // 見出し(28px) + 5行×26px = 158px
+        const blockH = 28 + 5 * 26;
+        const headerY = imgY + Math.floor((imgSize - blockH) / 2);
+        const dataStartY = headerY + 30;
 
         // ── 左列：満足度 ──
         const starFont2 = '18px "Zen Maru Gothic"';
