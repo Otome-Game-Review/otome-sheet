@@ -589,16 +589,16 @@ function generate() {
         const rightAreaW = W - starX - 50;
         const colMid = rightAreaX + Math.floor(rightAreaW / 2);
 
-        // 満足度・攻略順：完全に同じY変数を使う
-        const headerY = imgY;
-        const starRowStartY = imgY + 28;
+        // 見出しY・データ開始Yを分けて管理
+        const headerY = imgY + 8;        // 見出し「♡ 満足度」「♡ 攻略順」のY
+        const dataStartY = headerY + 30; // 星データ・攻略順テキストの開始Y（完全に同じ）
 
         // ── 左列：満足度 ──
         const starFont2 = '18px "Zen Maru Gothic"';
         ctx.font = starFont2;
         const labelMaxW2 = ctx.measureText('シナリオ').width + 14;
         drawSectionLabel(ctx, '満足度', rightAreaX, headerY, col.gcs);
-        let sy = starRowStartY;
+        let sy = dataStartY;
         const starKeys = [
           { key:'total', label:'総合' }, { key:'scenario', label:'シナリオ' },
           { key:'sugar', label:'糖度' }, { key:'system', label:'システム' }, { key:'bgm', label:'BGM' },
@@ -617,14 +617,14 @@ function generate() {
           sy += 26;
         });
 
-        // ── 右列：攻略順（満足度と完全に同じheaderY・starRowStartYからスタート） ──
+        // ── 右列：攻略順（データ開始Yを満足度と完全に揃える） ──
         const isCharaMode2 = document.getElementById('chara-mode-toggle').checked;
         let routeStr2 = isCharaMode2
           ? charaEntries.map(e => e.name).filter(n => n.trim()).join(' → ')
           : document.getElementById('direct-route').value;
         if (routeStr2) {
           drawSectionLabel(ctx, '攻略順', colMid, headerY, col.gcs);
-          let ry = starRowStartY;
+          let ry = dataStartY;
           ctx.textAlign = 'left';
           ctx.font = '18px "Zen Maru Gothic"';
           ctx.fillStyle = '#4a3f4a';
