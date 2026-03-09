@@ -212,8 +212,8 @@ body { padding-bottom: 80px; }
   <!-- 感想（2枚目用） -->
   <div class="card">
     <div class="card-title">♡ 感想（自由記述）<span class="optional-badge">任意・2枚目に使用</span></div>
-    <textarea id="free-review" rows="6" maxlength="750" placeholder="ゲーム全体の感想を自由に…（2枚目の感想シートに入ります）" oninput="countChars(this,'cnt-free-review')"></textarea>
-    <div class="char-count"><span id="cnt-free-review">0</span>/750文字</div>
+    <textarea id="free-review" rows="6" maxlength="1000" placeholder="ゲーム全体の感想を自由に…（2枚目の感想シートに入ります）" oninput="countChars(this,'cnt-free-review')"></textarea>
+    <div class="char-count"><span id="cnt-free-review">0</span>/1000文字</div>
   </div>
 
   <!-- サイン -->
@@ -844,13 +844,12 @@ function generate2() {
   const maxW = W - 100;
 
   if (freeReview) {
-    drawSectionLabel(ctx, '感想', lx, y, col.gcs);
-    y += 28;
+    y += 10;
     ctx.textAlign = 'left';
-    ctx.font = '23px "Zen Maru Gothic"';
+    ctx.font = '25px "Zen Maru Gothic"';
     ctx.fillStyle = '#4a3f4a';
     const lines = wrapText(ctx, freeReview, maxW);
-    lines.forEach(line => { ctx.fillText(line, lx, y); y += 30; });
+    lines.forEach(line => { ctx.fillText(line, lx, y); y += 32; });
   } else {
     // 感想未記入時のメッセージ
     ctx.textAlign = 'center';
