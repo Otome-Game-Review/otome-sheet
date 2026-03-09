@@ -141,25 +141,16 @@ body { padding-bottom: 80px; }
     <div class="star-row" style="margin-bottom:0"><span class="star-label">BGM</span><div class="stars" id="stars-bgm"></div></div>
   </div>
 
-  <!-- プレイ総時間 ＋ 一番刺さったエンド -->
+  <!-- プレイ総時間 -->
   <div class="card">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-      <div>
-        <div class="card-title" style="margin-bottom:8px;">♡ プレイ総時間<span class="optional-badge">任意</span></div>
-        <select id="playtime">
-          <option value="">選択しない</option>
-          <option value="1日未満">1日未満</option>
-          <option value="2〜3日">2〜3日</option>
-          <option value="1週間">1週間</option>
-          <option value="まったりプレイ">まったりプレイ</option>
-        </select>
-      </div>
-      <div>
-        <div class="card-title" style="margin-bottom:8px;">♡ 一番刺さったエンド<span class="optional-badge">任意</span></div>
-        <input type="text" id="best-end" placeholder="例：〇〇ルート　グッドエンド" maxlength="30" oninput="countChars(this,'cnt-best-end')">
-        <div class="char-count"><span id="cnt-best-end">0</span>/30文字</div>
-      </div>
-    </div>
+    <div class="card-title">♡ プレイ総時間<span class="optional-badge">任意</span></div>
+    <select id="playtime">
+      <option value="">選択しない</option>
+      <option value="1日未満">1日未満</option>
+      <option value="2〜3日">2〜3日</option>
+      <option value="1週間">1週間</option>
+      <option value="まったりプレイ">まったりプレイ</option>
+    </select>
   </div>
 
   <!-- キャラ感想（攻略順） -->
@@ -202,6 +193,13 @@ body { padding-bottom: 80px; }
     <div class="card-title">♡ 好みが分かれそうポイント<span class="optional-badge">任意・MAX3</span></div>
     <div id="split-list"></div>
     <button class="btn btn-outline btn-sm" id="split-add-btn" style="width:100%;margin-top:6px;" onclick="addPoint('split')">＋ 追加</button>
+  </div>
+
+  <!-- 一番刺さったエンド -->
+  <div class="card">
+    <div class="card-title">♡ 一番刺さったエンド<span class="optional-badge">任意</span></div>
+    <input type="text" id="best-end" placeholder="例：〇〇ルート　グッドエンド" maxlength="30" oninput="countChars(this,'cnt-best-end')">
+    <div class="char-count"><span id="cnt-best-end">0</span>/30文字</div>
   </div>
 
   <!-- 最終的な最推し -->
