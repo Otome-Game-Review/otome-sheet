@@ -636,6 +636,7 @@ function generateCanvas() {
 }
 
 function drawRestContent(ctx, W, H, col, startY, skipStars, skipTimeEnd = false) {
+  try {
   let y = startY;
   const lx = 50;
   const maxW = W - 100;
@@ -766,13 +767,13 @@ function drawRestContent(ctx, W, H, col, startY, skipStars, skipTimeEnd = false)
     }
 
     y = sy + 12;
+  }
 
-    // ③一番刺さったエンドを満足度・攻略順の下に
-    const bestEndBelow = document.getElementById('best-end').value;
-    if (bestEndBelow) {
-      y = drawBlock(ctx, '一番刺さったエンド', lx, y, maxW, col, false);
-      y += 14;
-    }
+  // 一番刺さったエンド（画像あり・なし両方で表示）
+  const bestEndBelow = document.getElementById('best-end').value;
+  if (bestEndBelow) {
+    y = drawBlock(ctx, '一番刺さったエンド', lx, y, maxW, col, false);
+    y += 14;
   }
 
   // 最推し帯
@@ -803,6 +804,10 @@ function drawRestContent(ctx, W, H, col, startY, skipStars, skipTimeEnd = false)
   ctx.fillText('「otome sheet」designed by @usetoma0403', W/2, H - 26);
 
   showResult();
+  } catch(e) {
+    console.error('drawRestContent error:', e);
+    alert('描画エラー: ' + e.message);
+  }
 }
 
 function drawBlock(ctx, label, text, x, y, maxW, col, isHighlight) {
@@ -836,6 +841,8 @@ function showResult() {
   const canvas = document.getElementById('preview-canvas');
   const img = document.getElementById('preview-img');
   try {
+    // キャッシュ回避：いったん空にしてから再セット
+    img.src = '';
     img.src = canvas.toDataURL('image/png');
   } catch(e) {
     alert('画像の生成に失敗しました。');
