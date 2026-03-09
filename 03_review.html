@@ -92,7 +92,7 @@ body { padding-bottom: 80px; }
 </head>
 <body>
 
-<nav class="top-nav">
+<nav class="top-nav" style="display:none;">
   <a href="index.html" class="logo">✨ otome sheet</a>
   <a href="01_before.html">プレイ前</a>
   <a href="02_chara.html">個別キャラ</a>
@@ -212,8 +212,9 @@ body { padding-bottom: 80px; }
   <!-- 感想（2枚目用） -->
   <div class="card">
     <div class="card-title">♡ 感想（自由記述）<span class="optional-badge">任意・2枚目に使用</span></div>
-    <textarea id="free-review" rows="6" maxlength="600" placeholder="ゲーム全体の感想を自由に…（2枚目の感想シートに入ります）" oninput="countChars(this,'cnt-free-review')"></textarea>
-    <div class="char-count"><span id="cnt-free-review">0</span>/600文字</div>
+    <textarea id="free-review" rows="6" maxlength="700" placeholder="ゲーム全体の感想を自由に…（2枚目の感想シートに入ります）" oninput="countChars(this,'cnt-free-review')"></textarea>
+    <div class="char-count"><span id="cnt-free-review">0</span>/700文字</div>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">※改行を多用すると表示しきれない場合があります</div>
   </div>
 
   <!-- サイン -->
