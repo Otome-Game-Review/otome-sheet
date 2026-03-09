@@ -772,7 +772,7 @@ function drawRestContent(ctx, W, H, col, startY, skipStars, skipTimeEnd = false)
   // 一番刺さったエンド（画像あり・なし両方で表示）
   const bestEndBelow = document.getElementById('best-end').value;
   if (bestEndBelow) {
-    y = drawBlock(ctx, '一番刺さったエンド', lx, y, maxW, col, false);
+    y = drawBlock(ctx, '一番刺さったエンド', bestEndBelow, lx, y, maxW, col, false);
     y += 14;
   }
 
@@ -963,9 +963,10 @@ function drawDashRect(ctx, x, y, w, h, color, lw, dash) {
 }
 
 function wrapText(ctx, text, maxW) {
+  if (!text) return [];
   const lines = [];
   let cur = '';
-  for (const ch of text) {
+  for (const ch of String(text)) {
     if (ch === '\n') { lines.push(cur); cur = ''; continue; }
     if (ctx.measureText(cur+ch).width > maxW) { lines.push(cur); cur = ch; }
     else cur += ch;
