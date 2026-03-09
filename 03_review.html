@@ -113,11 +113,11 @@ body { padding-bottom: 80px; }
       <input type="text" id="game-title" placeholder="タイトルを入力" maxlength="20" oninput="countChars(this,'cnt-game-title')">
       <div class="char-count"><span id="cnt-game-title">0</span>/20文字</div>
     </div>
-    <label>メイン画像（必須・ゲームや推しの画像など）</label>
+    <label>メイン画像（※必須・推しの画像やアイコンなどに）</label>
     <p style="font-size:0.7rem;color:var(--muted);margin:3px 0 6px;">推奨：正方形（1:1）のJPG/PNG・1MB以下</p>
     <div style="display:flex;align-items:flex-start;gap:12px;margin-top:4px;">
       <div class="upload-area" id="review-upload" style="width:100px;height:100px;border-radius:12px;" onclick="document.getElementById('review-file').click()">
-        <div class="upload-placeholder" id="review-upload-placeholder">📷<br>画像（任意）</div>
+        <div class="upload-placeholder" id="review-upload-placeholder">📷<br>画像（必須）</div>
         <img id="review-preview-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:10px;">
         <input type="file" id="review-file" accept="image/*" onchange="handleReviewImg(this)">
       </div>
@@ -630,6 +630,7 @@ function generateCanvas() {
       };
       imgObj.onerror = () => { alert('画像の読み込みに失敗しました。'); };
       imgObj.src = reviewImgData;
+    }
   };
   drawContent();
 }
