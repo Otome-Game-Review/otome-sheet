@@ -465,7 +465,11 @@ function generate() {
   if (!gameTitle) { alert('ゲームタイトルを入力してください！'); return; }
 
   // フォント読み込み完了を待ってから描画
-  document.fonts.ready.then(() => { generateCanvas(); });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { generateCanvas(); });
+  } else {
+    generateCanvas();
+  }
 }
 
 function generateCanvas() {
@@ -690,12 +694,7 @@ function drawRestContent(ctx, W, H, col, startY, skipStars, skipTimeEnd = false)
     y += 10;
   }
 
-  // 主人公
-  const heroine = document.getElementById('heroine').value;
-  if (heroine) {
-    y = drawBlock(ctx, '主人公について', heroine, lx, y, maxW, col, false);
-    y += 14;
-  }
+  // 主人公（設問削除済みのためスキップ）
 
   // 良かったところ
   const goods = pointData.good.filter(v => v.trim());
