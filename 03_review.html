@@ -693,11 +693,11 @@ function drawRestContent(ctx, W, H, col, startY) {
         ctx.fillText(sep, lx + nameW + 4, y);
         const kansouLines = wrapText(ctx, e.kansou, kansouMaxW);
         kansouLines.forEach((line, li) => {
-          ctx.fillText(line, kansouX + sepW, y + li * 24);
+          ctx.fillText(line, kansouX + sepW, y + li * 22);
         });
-        y += Math.max(28, kansouLines.length * 24);
+        y += Math.max(26, kansouLines.length * 22);
       } else {
-        y += 28;
+        y += 26;
       }
     });
     y += 10;
@@ -712,7 +712,7 @@ function drawRestContent(ctx, W, H, col, startY) {
     ctx.font = '18px "Zen Maru Gothic"';
     ctx.fillStyle = '#4a3f4a';
     const heroineLines = wrapText(ctx, heroine, maxW);
-    heroineLines.forEach(line => { ctx.fillText(line, lx, y); y += 24; });
+    heroineLines.forEach(line => { ctx.fillText(line, lx, y); y += 22; });
     y += 10;
   }
 
@@ -728,7 +728,7 @@ function drawRestContent(ctx, W, H, col, startY) {
       ctx.font = '18px "Zen Maru Gothic"';
       ctx.fillStyle = '#3a2f3a';
       ctx.fillText(g, lx + 26, y);
-      y += 26;
+      y += 24;
     });
     y += 10;
   }
@@ -746,7 +746,7 @@ function drawRestContent(ctx, W, H, col, startY) {
       ctx.font = '18px "Zen Maru Gothic"';
       ctx.fillStyle = '#3a2f3a';
       ctx.fillText(s, lx + 26, y);
-      y += 26;
+      y += 24;
     });
     y += 10;
   }
