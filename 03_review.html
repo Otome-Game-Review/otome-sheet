@@ -706,8 +706,14 @@ function drawRestContent(ctx, W, H, col, startY) {
   // ヒロインについて
   const heroine = document.getElementById('heroine').value;
   if (heroine) {
-    y = drawBlock(ctx, 'ヒロインについて', heroine, lx, y, maxW, col, false);
-    y += 14;
+    drawSectionLabel(ctx, 'ヒロインについて', lx, y, col.gcs);
+    y += 28;
+    ctx.textAlign = 'left';
+    ctx.font = '18px "Zen Maru Gothic"';
+    ctx.fillStyle = '#4a3f4a';
+    const heroineLines = wrapText(ctx, heroine, maxW);
+    heroineLines.forEach(line => { ctx.fillText(line, lx, y); y += 24; });
+    y += 10;
   }
 
   // 良かったところ
@@ -719,10 +725,10 @@ function drawRestContent(ctx, W, H, col, startY) {
       ctx.fillStyle = col.gc;
       ctx.beginPath(); ctx.arc(lx + 9, y - 6, 8, 0, Math.PI*2); ctx.fill();
       ctx.textAlign = 'left';
-      ctx.font = '20px "Zen Maru Gothic"';
+      ctx.font = '18px "Zen Maru Gothic"';
       ctx.fillStyle = '#3a2f3a';
       ctx.fillText(g, lx + 26, y);
-      y += 28;
+      y += 26;
     });
     y += 10;
   }
@@ -734,13 +740,13 @@ function drawRestContent(ctx, W, H, col, startY) {
     y += 28;
     splits.forEach(s => {
       ctx.fillStyle = col.gcs;
-      ctx.font = 'bold 20px "Zen Maru Gothic"';
+      ctx.font = 'bold 18px "Zen Maru Gothic"';
       ctx.textAlign = 'left';
       ctx.fillText('△', lx, y);
-      ctx.font = '20px "Zen Maru Gothic"';
+      ctx.font = '18px "Zen Maru Gothic"';
       ctx.fillStyle = '#3a2f3a';
       ctx.fillText(s, lx + 26, y);
-      y += 28;
+      y += 26;
     });
     y += 10;
   }
@@ -748,8 +754,14 @@ function drawRestContent(ctx, W, H, col, startY) {
   // 一番刺さったエンド
   const bestEndBelow = document.getElementById('best-end').value;
   if (bestEndBelow) {
-    y = drawBlock(ctx, '一番刺さったエンド', bestEndBelow, lx, y, maxW, col, false);
-    y += 14;
+    drawSectionLabel(ctx, '一番刺さったエンド', lx, y, col.gcs);
+    y += 28;
+    ctx.textAlign = 'left';
+    ctx.font = '18px "Zen Maru Gothic"';
+    ctx.fillStyle = '#4a3f4a';
+    const bestEndLines = wrapText(ctx, bestEndBelow, maxW);
+    bestEndLines.forEach(line => { ctx.fillText(line, lx, y); y += 24; });
+    y += 10;
   }
 
   // 最推し帯
