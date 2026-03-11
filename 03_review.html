@@ -520,18 +520,18 @@ function generateCanvas() {
   // ── サイン帯（ドットのすぐ下・2行）──
   const userSignHeader = document.getElementById('user-sign').value.trim();
   ctx.fillStyle = col.gc + '30';
-  ctx.fillRect(50, 114, W - 100, 44);
+  ctx.fillRect(50, 114, W - 100, 54);
   ctx.textAlign = 'center';
-  ctx.font = '13px "Zen Maru Gothic"';
+  ctx.font = '20px "Zen Maru Gothic"';
   ctx.fillStyle = col.gcs;
   const signText = userSignHeader ? `♡ otome sheet ♡　／　${userSignHeader}` : '♡ otome sheet ♡';
-  ctx.fillText(signText, W / 2, 132);
+  ctx.fillText(signText, W / 2, 138);
   ctx.font = '11px "Zen Maru Gothic"';
   ctx.fillStyle = col.gcs + 'bb';
-  ctx.fillText('「otome sheet」designed by @usetoma0403', W / 2, 150);
+  ctx.fillText('「otome sheet」designed by @usetoma0403', W / 2, 158);
 
   const drawContent = () => {
-    let y = 172;
+    let y = 182;
     const lx = 50;
     const maxW = W - 100;
 
@@ -841,18 +841,18 @@ function generate2() {
 
   // サイン帯（2行）
   ctx.fillStyle = col.gc + '30';
-  ctx.fillRect(50, 114, W - 100, 44);
+  ctx.fillRect(50, 114, W - 100, 54);
   ctx.textAlign = 'center';
-  ctx.font = '13px "Zen Maru Gothic"';
+  ctx.font = '20px "Zen Maru Gothic"';
   ctx.fillStyle = col.gcs;
   const signText2 = userSign ? `♡ otome sheet ♡　／　${userSign}` : '♡ otome sheet ♡';
-  ctx.fillText(signText2, W / 2, 132);
+  ctx.fillText(signText2, W / 2, 138);
   ctx.font = '11px "Zen Maru Gothic"';
   ctx.fillStyle = col.gcs + 'bb';
-  ctx.fillText('「otome sheet」designed by @usetoma0403', W / 2, 150);
+  ctx.fillText('「otome sheet」designed by @usetoma0403', W / 2, 158);
 
   // 感想本文
-  let y = 186;
+  let y = 196;
   const lx = 50;
   const maxW = W - 100;
 
