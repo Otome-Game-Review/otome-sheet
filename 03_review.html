@@ -194,7 +194,7 @@ body { padding-bottom: 80px; }
   <!-- ヒロインについて -->
   <div class="card">
     <div class="card-title">♡ ヒロインについて<span class="optional-badge">任意</span></div>
-    <textarea id="heroine" rows="2" maxlength="80" placeholder="ヒロインについての感想…" oninput="countChars(this,'cnt-heroine')"></textarea>
+    <textarea id="heroine" rows="4" maxlength="80" placeholder="ヒロインについての感想…" oninput="countChars(this,'cnt-heroine')" style="resize:none;"></textarea>
     <div class="char-count"><span id="cnt-heroine">0</span>/80文字</div>
   </div>
 
@@ -229,7 +229,7 @@ body { padding-bottom: 80px; }
   <!-- 感想（2枚目用） -->
   <div class="card">
     <div class="card-title">♡ 感想（自由記述）<span class="optional-badge">任意・2枚目に使用</span></div>
-    <textarea id="free-review" rows="6" maxlength="700" placeholder="ゲーム全体の感想を自由に…（2枚目の感想シートに入ります）" oninput="countChars(this,'cnt-free-review')"></textarea>
+    <textarea id="free-review" rows="6" maxlength="700" placeholder="ゲーム全体の感想を自由に…（2枚目の感想シートに入ります）" oninput="countChars(this,'cnt-free-review')" style="resize:vertical;"></textarea>
     <div class="char-count"><span id="cnt-free-review">0</span>/700文字</div>
     <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">※改行を多用すると表示しきれない場合があります</div>
   </div>
@@ -350,7 +350,7 @@ function renderPoints(type) {
     row.innerHTML = `
       <div class="point-bullet" style="${isGood ? '' : 'background:#f5e4e4;color:#c06060;'}">${isGood ? i+1 : '△'}</div>
       <div style="flex:1;">
-        <input type="text" value="${val}" placeholder="${isGood ? `良かった点${i+1}` : `ポイント${i+1}`}" maxlength="30" oninput="pointData['${type}'][${i}]=this.value;document.getElementById('cnt-${type}-${i}').textContent=this.value.length" style="width:100%;">
+        <textarea rows="2" maxlength="30" placeholder="${isGood ? `良かった点${i+1}` : `ポイント${i+1}`}" oninput="pointData['${type}'][${i}]=this.value;document.getElementById('cnt-${type}-${i}').textContent=this.value.length" style="width:100%;resize:none;">${val}</textarea>
         <div class="char-count"><span id="cnt-${type}-${i}">${val.length}</span>/30文字</div>
       </div>
       <button onclick="removePoint('${type}',${i})" style="background:none;border:none;font-size:1rem;cursor:pointer;color:#b0a0b0;padding:0 4px;flex-shrink:0;align-self:flex-start;margin-top:6px;">✕</button>
@@ -423,22 +423,17 @@ function renderCharaEntries() {
   wrap.innerHTML = '';
   charaEntries.forEach((e, i) => {
     const div = document.createElement('div');
-    div.className = 'chara-entry';
+    div.style.cssText = 'margin-bottom:12px;';
     div.innerHTML = `
-      <div>
-        <label style="font-size:0.7rem;">キャラ名 ${i+1}</label>
-        <input type="text" value="${e.name}" placeholder="名前" maxlength="10" oninput="updateEntry(${e.id},'name',this.value);document.getElementById('cnt-chara-name-${e.id}').textContent=this.value.length">
-        <div class="char-count"><span id="cnt-chara-name-${e.id}">${e.name.length}</span>/10文字</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <label style="font-size:0.7rem;margin:0;flex-shrink:0;">キャラ名 ${i+1}</label>
+        <input type="text" value="${e.name}" placeholder="名前" maxlength="10" oninput="updateEntry(${e.id},'name',this.value);document.getElementById('cnt-chara-name-${e.id}').textContent=this.value.length" style="flex:1;">
+        <span style="font-size:0.65rem;color:var(--muted);flex-shrink:0;"><span id="cnt-chara-name-${e.id}">${e.name.length}</span>/10</span>
+        <button onclick="removeCharaEntry(${e.id})" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:#a090a0;padding:0 4px;flex-shrink:0;">✕</button>
       </div>
-      <div style="position:relative;">
-        <label style="font-size:0.7rem;">一言感想</label>
-        <div style="display:flex;gap:6px;">
-          <div style="flex:1;">
-            <input type="text" value="${e.kansou}" placeholder="一言感想（任意）" maxlength="30" oninput="updateEntry(${e.id},'kansou',this.value);document.getElementById('cnt-chara-kansou-${e.id}').textContent=this.value.length" style="width:100%;">
-            <div class="char-count"><span id="cnt-chara-kansou-${e.id}">${e.kansou.length}</span>/30文字</div>
-          </div>
-          <button onclick="removeCharaEntry(${e.id})" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:#a090a0;padding:0 4px;align-self:flex-start;margin-top:6px;">✕</button>
-        </div>
+      <div>
+        <textarea rows="2" maxlength="30" placeholder="一言感想（任意）" oninput="updateEntry(${e.id},'kansou',this.value);document.getElementById('cnt-chara-kansou-${e.id}').textContent=this.value.length" style="width:100%;resize:none;">${e.kansou}</textarea>
+        <div class="char-count"><span id="cnt-chara-kansou-${e.id}">${e.kansou.length}</span>/30文字</div>
       </div>
     `;
     wrap.appendChild(div);
