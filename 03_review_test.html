@@ -194,7 +194,7 @@ body { padding-bottom: 80px; }
   <!-- ヒロインについて -->
   <div class="card">
     <div class="card-title">♡ ヒロインについて<span class="optional-badge">任意</span></div>
-    <textarea id="heroine" rows="2" maxlength="80" placeholder="ヒロインについての感想…" oninput="countChars(this,'cnt-heroine')"></textarea>
+    <textarea id="heroine" rows="2" maxlength="80" placeholder="ヒロインについての感想…" oninput="countChars(this,'cnt-heroine')" style="resize:vertical;"></textarea>
     <div class="char-count"><span id="cnt-heroine">0</span>/80文字</div>
   </div>
 
@@ -229,7 +229,7 @@ body { padding-bottom: 80px; }
   <!-- 感想（2枚目用） -->
   <div class="card">
     <div class="card-title">♡ 感想（自由記述）<span class="optional-badge">任意・2枚目に使用</span></div>
-    <textarea id="free-review" rows="6" maxlength="700" placeholder="ゲーム全体の感想を自由に…（2枚目の感想シートに入ります）" oninput="countChars(this,'cnt-free-review')"></textarea>
+    <textarea id="free-review" rows="6" maxlength="700" placeholder="ゲーム全体の感想を自由に…（2枚目の感想シートに入ります）" oninput="countChars(this,'cnt-free-review')" style="resize:vertical;"></textarea>
     <div class="char-count"><span id="cnt-free-review">0</span>/700文字</div>
     <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">※改行を多用すると表示しきれない場合があります</div>
   </div>
@@ -350,7 +350,7 @@ function renderPoints(type) {
     row.innerHTML = `
       <div class="point-bullet" style="${isGood ? '' : 'background:#f5e4e4;color:#c06060;'}">${isGood ? i+1 : '△'}</div>
       <div style="flex:1;">
-        <input type="text" value="${val}" placeholder="${isGood ? `良かった点${i+1}` : `ポイント${i+1}`}" maxlength="30" oninput="pointData['${type}'][${i}]=this.value;document.getElementById('cnt-${type}-${i}').textContent=this.value.length" style="width:100%;">
+        <textarea rows="2" maxlength="30" placeholder="${isGood ? `良かった点${i+1}` : `ポイント${i+1}`}" oninput="pointData['${type}'][${i}]=this.value;document.getElementById('cnt-${type}-${i}').textContent=this.value.length" style="width:100%;resize:none;">${val}</textarea>
         <div class="char-count"><span id="cnt-${type}-${i}">${val.length}</span>/30文字</div>
       </div>
       <button onclick="removePoint('${type}',${i})" style="background:none;border:none;font-size:1rem;cursor:pointer;color:#b0a0b0;padding:0 4px;flex-shrink:0;align-self:flex-start;margin-top:6px;">✕</button>
