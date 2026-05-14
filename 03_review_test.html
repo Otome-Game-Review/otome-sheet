@@ -82,6 +82,13 @@ body { padding-bottom: 80px; }
 .preview-img { max-width: 100%; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); border: 2px solid var(--line); display: none; margin-top: 16px; }
 .dl-btn-wrap { margin-top: 14px; display: none; }
 
+/* プレイ総時間トグル */
+.active-toggle {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-color: var(--accent) !important;
+}
+
 /* 文字数カウント */
 .char-count {
   text-align: right;
@@ -160,12 +167,26 @@ body { padding-bottom: 80px; }
   <!-- プレイ総時間 -->
   <div class="card">
     <div class="card-title">♡ プレイ総時間<span class="optional-badge">任意</span></div>
-    <select id="playtime">
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button id="toggle-days" class="btn btn-outline btn-sm playtime-toggle active-toggle" style="flex:1;" onclick="switchPlaytimeMode('days')">📅 日数</button>
+      <button id="toggle-hours" class="btn btn-outline btn-sm playtime-toggle" style="flex:1;" onclick="switchPlaytimeMode('hours')">⏱ 時間</button>
+    </div>
+    <select id="playtime-days" onchange="onPlaytimeChange('days')">
       <option value="">選択しない</option>
       <option value="1日未満">1日未満</option>
       <option value="2〜3日">2〜3日</option>
-      <option value="1週間">1週間</option>
+      <option value="4〜7日">4〜7日</option>
+      <option value="2週間前後">2週間前後</option>
+      <option value="1ヶ月前後">1ヶ月前後</option>
       <option value="まったりプレイ">まったりプレイ</option>
+    </select>
+    <select id="playtime-hours" style="display:none;" onchange="onPlaytimeChange('hours')">
+      <option value="">選択しない</option>
+      <option value="〜10時間">〜10時間</option>
+      <option value="20〜30時間">20〜30時間</option>
+      <option value="40〜50時間">40〜50時間</option>
+      <option value="50〜100時間">50〜100時間</option>
+      <option value="100時間以上">100時間以上</option>
     </select>
   </div>
 
@@ -273,6 +294,40 @@ body { padding-bottom: 80px; }
 </div>
 
 <script>
+let playtimeMode = 'days'; // 'days' or 'hours'
+
+function switchPlaytimeMode(mode) {
+  playtimeMode = mode;
+  const daysEl = document.getElementById('playtime-days');
+  const hoursEl = document.getElementById('playtime-hours');
+  const toggleDays = document.getElementById('toggle-days');
+  const toggleHours = document.getElementById('toggle-hours');
+  if (mode === 'days') {
+    daysEl.style.display = '';
+    hoursEl.style.display = 'none';
+    hoursEl.value = '';
+    toggleDays.classList.add('active-toggle');
+    toggleHours.classList.remove('active-toggle');
+  } else {
+    hoursEl.style.display = '';
+    daysEl.style.display = 'none';
+    daysEl.value = '';
+    toggleHours.classList.add('active-toggle');
+    toggleDays.classList.remove('active-toggle');
+  }
+}
+
+function onPlaytimeChange(mode) {
+  // 選択があれば相手方をリセット（両方表示になる場合の保険）
+  if (mode === 'days') document.getElementById('playtime-hours').value = '';
+  else document.getElementById('playtime-days').value = '';
+}
+
+function getPlaytimeValue() {
+  if (playtimeMode === 'days') return document.getElementById('playtime-days').value;
+  return document.getElementById('playtime-hours').value;
+}
+
 function countChars(el, counterId) {
   document.getElementById(counterId).textContent = el.value.length;
 }
@@ -634,7 +689,7 @@ function generateCanvas() {
         });
 
         // ── プレイ総時間（満足度の右横・♡プレイ総時間をheaderYに揃える） ──
-        const playtime2 = document.getElementById('playtime').value;
+        const playtime2 = getPlaytimeValue();
         if (playtime2) {
           const ptX = rightAreaX + starColW + 20;
           ctx.font = 'bold 22px "Zen Maru Gothic"';
