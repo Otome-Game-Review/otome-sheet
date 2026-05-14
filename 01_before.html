@@ -141,21 +141,15 @@ body { padding-bottom: 80px; }
   <div class="page-header">
     <h1>♡ プレイ前予想シート</h1>
     <p>プレイ前の期待・予想を記録しよう！</p>
-    <p style="font-size:0.72rem;color:var(--accent);margin-top:4px;font-weight:600;">最大8名まで登録できます</p>
+    <p style="font-size:0.72rem;color:var(--accent);margin-top:4px;font-weight:600;">最大9名まで登録できます</p>
   </div>
 
-  <!-- 注意事項・クレジット -->
+  <!-- 注意事項 -->
   <div class="card" style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-bottom:14px;">
-    <div style="margin-bottom:8px;">
+    <div>
       <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【注意事項】</div>
       <div>・画像を使用する場合は著作権にご配慮ください</div>
-      <div>・ネタバレを含む場合は投稿時に配慮をお願いします</div>
       <div>・他ユーザーや作品・キャラクターへの誹謗中傷はご遠慮ください</div>
-    </div>
-    <div>
-      <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【クレジット】</div>
-      <div>このツールは @usetoma0403 が個人制作した非公式ファンメイドツールです</div>
-      <div>各ゲームの著作権は各メーカーに帰属します</div>
     </div>
   </div>
 
@@ -164,6 +158,11 @@ body { padding-bottom: 80px; }
     <div class="card-title">♡ ゲームタイトル</div>
     <input type="text" id="game-title" placeholder="タイトルを入力（20文字以内）" maxlength="20" oninput="countChars(this,'cnt-game-title')">
     <div class="char-count"><span id="cnt-game-title">0</span>/20文字</div>
+    <div style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);">
+      <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【クレジット】</div>
+      <div>このツールは @usetoma0403 が個人制作した非公式ファンメイドツールです</div>
+      <div>各ゲームの著作権は各メーカーに帰属します</div>
+    </div>
   </div>
 
   <!-- キャラリスト -->
@@ -215,7 +214,7 @@ let charaCount = 0;
 let charas = [];
 
 function addChara() {
-  if (charas.length >= 8) { alert('キャラは最大8名までです！'); return; }
+  if (charas.length >= 9) { alert('キャラは最大9名までです！'); return; }
   charaCount++;
   charas.push({ id: charaCount, name:'', imgData:null, color: COLORS[0], yosou:'', rank: null });
   renderCharas();
@@ -251,8 +250,8 @@ function renderCharas() {
           </div>
           <div class="chara-info-col">
             <div>
-              <label>キャラ名</label>
-              <input type="text" value="${c.name}" maxlength="20" placeholder="名前を入力" oninput="updateChara(${c.id},'name',this.value)">
+              <label>キャラ名（10文字以内）</label>
+              <input type="text" value="${c.name}" maxlength="10" placeholder="名前を入力（10文字以内）" oninput="updateChara(${c.id},'name',this.value)">
             </div>
             <div>
               <label>キャラカラー</label>
@@ -288,7 +287,7 @@ function renderCharas() {
     `;
     list.appendChild(div);
   });
-  document.getElementById('add-btn').style.display = charas.length >= 8 ? 'none' : 'block';
+  document.getElementById('add-btn').style.display = charas.length >= 9 ? 'none' : 'block';
 }
 
 function updateChara(id, key, val) {
@@ -329,8 +328,8 @@ function generate() {
   const missingName = charas.find(c => !c.name.trim());
   if (missingName) { alert('全キャラのキャラ名を入力してください！'); return; }
 
-  // レイアウト: 1-4名→2列、5-8名→3列（画像上・テキスト下）
-  const cols = charas.length <= 4 ? 2 : 3;
+  // レイアウト: 常に3列（最大9名＝3×3）
+  const cols = charas.length <= 2 ? 2 : 3;
   const rows = Math.ceil(charas.length / cols);
 
   const W = 900;
@@ -339,10 +338,10 @@ function generate() {
   const PAD = 28;
   const GAP = 14;
 
-  // カード幅から正方形画像サイズを決定
+  // カード幅から画像サイズを決定（正方形の70%の高さ → 本文を広く）
   const cardW = Math.floor((W - PAD*2 - GAP*(cols-1)) / cols);
-  const IMG_H = cardW; // 正方形
-  const TEXT_H = 120;
+  const IMG_H = Math.floor(cardW * 0.68); // 画像は幅の68%の高さ（少し小さく）
+  const TEXT_H = 150;
   const cardH = IMG_H + TEXT_H;
 
   const H = HEADER_H + rows * cardH + GAP * (rows-1) + PAD + FOOTER_H;
@@ -509,56 +508,102 @@ function drawCharaCard(ctx, c, x, y, w, h, imgH, done) {
   img.src = c.imgData;
 }
 
-// 王冠バッジ（添付画像に近いシルエット）
+// 王冠バッジ（数字を王冠内部に）
 function drawCrownBadge(ctx, c, cardX, cardY) {
   if (c.rank === null || c.rank === undefined) return;
   const bgColor = CROWN_COLORS[c.rank - 1] || '#909090';
-  const bx = cardX + 24, by = cardY + 24, br = 20;
+  const bx = cardX + 26, by = cardY + 26;
+  const size = 42; // バッジ全体サイズ
 
-  // バッジ円
-  ctx.fillStyle = bgColor;
-  ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI*2); ctx.fill();
-  ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5;
-  ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI*2); ctx.stroke();
+  ctx.save();
 
-  // 王冠シルエット
-  drawCrownShape(ctx, bx, by - 3, 24, '#fff');
+  // 影
+  ctx.shadowColor = 'rgba(0,0,0,0.3)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetX = 1;
+  ctx.shadowOffsetY = 2;
 
-  // 数字
+  // 王冠シルエットそのものをバッジとして描く
+  drawCrownSilhouette(ctx, bx, by, size, bgColor);
+
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  // 王冠の内側（ベース部分）に数字
   ctx.textAlign = 'center';
-  ctx.fillStyle = bgColor;
-  ctx.font = `bold 10px "Zen Maru Gothic"`;
-  ctx.fillText(String(c.rank), bx, by + 14);
+  ctx.fillStyle = '#fff';
+  ctx.font = `bold ${size * 0.38}px "Zen Maru Gothic"`;
+  ctx.fillText(String(c.rank), bx, by + size * 0.28);
+
+  ctx.restore();
 }
 
-function drawCrownShape(ctx, cx, cy, size, color) {
-  const s = size / 24;
+function drawCrownSilhouette(ctx, cx, cy, size, color) {
+  // 添付画像の王冠に近い形: 3つのボール＋台形ベース
+  const s = size / 40;
+
+  // ── ベース（台形）──
+  const baseTop = cy;        // ベース上端
+  const baseBot = cy + 15*s; // ベース下端
+  const baseL   = cx - 18*s;
+  const baseR   = cx + 18*s;
+  const baseR2  = 4*s;       // 角丸
+
   ctx.fillStyle = color;
   ctx.beginPath();
-
-  // ベースライン: cy+2s～cy+7s, 幅: cx±11s
-  const bL = cx - 11*s, bR = cx + 11*s;
-  const bY = cy + 7*s;   // ベース底
-  const bTop = cy + 2*s; // ベース上端
-
-  ctx.moveTo(bL + 2*s, bY);
-  ctx.quadraticCurveTo(bL, bY, bL, bY - 2*s);
-  // 左端: 上に伸びてボール
-  ctx.lineTo(bL, bTop);
-  ctx.arc(bL + 3*s, bTop - 4*s, 3*s, Math.PI*1.1, Math.PI*2.0); // 左ボール
-  ctx.lineTo(bL + 6*s, bTop);
-  // 左谷
-  ctx.lineTo(cx - 4*s, bTop + 2*s);
-  // 中央ボール（最高点）
-  ctx.arc(cx, bTop - 7*s, 3.2*s, Math.PI*0.75, Math.PI*2.25); // 中央ボール
-  ctx.lineTo(cx + 4*s, bTop + 2*s);
-  // 右谷
-  ctx.lineTo(bR - 6*s, bTop);
-  ctx.arc(bR - 3*s, bTop - 4*s, 3*s, Math.PI*1.0, Math.PI*0.1, true); // 右ボール
-  ctx.lineTo(bR, bTop);
-  ctx.lineTo(bR, bY - 2*s);
-  ctx.quadraticCurveTo(bR, bY, bR - 2*s, bY);
+  // 台形: 上辺と下辺
+  ctx.moveTo(baseL + baseR2, baseTop);
+  ctx.lineTo(baseR - baseR2, baseTop);
+  ctx.quadraticCurveTo(baseR, baseTop, baseR, baseTop + baseR2);
+  ctx.lineTo(baseR, baseBot - baseR2);
+  ctx.quadraticCurveTo(baseR, baseBot, baseR - baseR2, baseBot);
+  ctx.lineTo(baseL + baseR2, baseBot);
+  ctx.quadraticCurveTo(baseL, baseBot, baseL, baseBot - baseR2);
+  ctx.lineTo(baseL, baseTop + baseR2);
+  ctx.quadraticCurveTo(baseL, baseTop, baseL + baseR2, baseTop);
   ctx.closePath();
+  ctx.fill();
+
+  // ── 三角形の山（左・中央・右）──
+  // 左山
+  ctx.beginPath();
+  ctx.moveTo(baseL, baseTop);
+  ctx.lineTo(baseL + 2*s, baseTop - 13*s);
+  ctx.lineTo(baseL + 14*s, baseTop);
+  ctx.closePath();
+  ctx.fill();
+
+  // 中央山（一番高い）
+  ctx.beginPath();
+  ctx.moveTo(cx - 10*s, baseTop);
+  ctx.lineTo(cx, baseTop - 20*s);
+  ctx.lineTo(cx + 10*s, baseTop);
+  ctx.closePath();
+  ctx.fill();
+
+  // 右山
+  ctx.beginPath();
+  ctx.moveTo(baseR - 14*s, baseTop);
+  ctx.lineTo(baseR - 2*s, baseTop - 13*s);
+  ctx.lineTo(baseR, baseTop);
+  ctx.closePath();
+  ctx.fill();
+
+  // ── ボール（左・中央・右）──
+  const ballR = 4*s;
+  // 左ボール
+  ctx.beginPath();
+  ctx.arc(baseL + 2*s, baseTop - 13*s, ballR, 0, Math.PI*2);
+  ctx.fill();
+  // 中央ボール
+  ctx.beginPath();
+  ctx.arc(cx, baseTop - 20*s, ballR, 0, Math.PI*2);
+  ctx.fill();
+  // 右ボール
+  ctx.beginPath();
+  ctx.arc(baseR - 2*s, baseTop - 13*s, ballR, 0, Math.PI*2);
   ctx.fill();
 }
 
