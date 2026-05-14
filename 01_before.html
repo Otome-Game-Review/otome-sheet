@@ -213,7 +213,7 @@ function addChara() {
   if (charas.length >= 6) { alert('キャラは最大6名までです！'); return; }
   charaCount++;
   const id = charaCount;
-  charas.push({ id, name:'', imgData:null, color: COLORS[0], yosou:'', kitai: 3 });
+  charas.push({ id, name:'', imgData:null, color: COLORS[0], yosou:'', rank: null });
   renderCharas();
 }
 
@@ -258,15 +258,18 @@ function renderCharas() {
             </div>
           </div>
           <div>
-            <label>期待度</label>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <input type="range" min="1" max="5" value="${c.kitai}" style="flex:1;" oninput="updateChara(${c.id},'kitai',parseInt(this.value));document.getElementById('kitai-disp-${c.id}').textContent='★'.repeat(parseInt(this.value))+'☆'.repeat(5-parseInt(this.value))">
-              <span id="kitai-disp-${c.id}" style="font-size:1rem;letter-spacing:1px;color:var(--accent);">${'★'.repeat(c.kitai)}${'☆'.repeat(5-c.kitai)}</span>
-            </div>
+            <label>気になる順位 👑</label>
+            <select onchange="updateChara(${c.id},'rank',this.value === '' ? null : parseInt(this.value)); updateRankOptions()">
+              <option value="" ${c.rank === null ? 'selected' : ''}>選択しない</option>
+              ${[1,2,3,4,5,6].map(n => {
+                const usedByOther = charas.some(x => x.id !== c.id && x.rank === n);
+                return `<option value="${n}" ${c.rank === n ? 'selected' : ''} ${usedByOther ? 'disabled' : ''}>👑 ${n}番気になる${usedByOther ? '（使用中）' : ''}</option>`;
+              }).join('')}
+            </select>
           </div>
           <div>
-            <label>プレイ前の予想・期待</label>
-            <textarea rows="3" maxlength="100" placeholder="こんなキャラかな〜と思ってること…（100文字以内）" oninput="updateChara(${c.id},'yosou',this.value);document.getElementById('yosou-cnt-${c.id}').textContent=this.value.length">${c.yosou}</textarea>
+            <label>プレイ前の感想・期待</label>
+            <textarea rows="3" maxlength="100" placeholder="こんなキャラかな〜、ここが気になる！…（100文字以内）" oninput="updateChara(${c.id},'yosou',this.value);document.getElementById('yosou-cnt-${c.id}').textContent=this.value.length">${c.yosou}</textarea>
             <div style="text-align:right;font-size:0.68rem;color:#b0a0b0;"><span id="yosou-cnt-${c.id}">${c.yosou.length}</span>/100文字</div>
           </div>
         </div>
@@ -276,6 +279,15 @@ function renderCharas() {
   });
   // 6名になったらボタンを非表示
   document.querySelector('.add-chara-btn').style.display = charas.length >= 6 ? 'none' : 'block';
+}
+
+function updateRankOptions() {
+  // 他のキャラが選んでいる順位を収集
+  const usedRanks = charas.map(c => c.rank).filter(r => r !== null);
+  charas.forEach(c => {
+    // 各キャラのselectを探す（renderCharasで再描画するので再描画で反映させる）
+  });
+  renderCharas();
 }
 
 function updateChara(id, key, val) {
@@ -453,13 +465,16 @@ function drawCharaCard(ctx, c, x, y, w, h, done) {
     ctx.fillText(c.name || '—', textX, ty);
     ty += nameFontSize + 6;
 
-    // 期待度☆
-    const kitai = c.kitai || 3;
-    const stars = '★'.repeat(kitai) + '☆'.repeat(5 - kitai);
-    ctx.font = `${Math.min(18, textW * 0.15)}px "Zen Maru Gothic"`;
-    ctx.fillStyle = '#f7c948';
-    ctx.fillText(stars, textX, ty);
-    ty += Math.min(18, textW * 0.15) + 10;
+    // 王冠ランキング
+    if (c.rank !== null && c.rank !== undefined) {
+      const crownColors = ['#e6b800','#aaaaaa','#c87830','#88aacc','#cc88aa','#88ccaa'];
+      const crownColor = crownColors[(c.rank - 1) % crownColors.length];
+      const crownSize = Math.min(22, textW * 0.18);
+      ctx.font = `bold ${crownSize}px "Zen Maru Gothic"`;
+      ctx.fillStyle = crownColor;
+      ctx.fillText(`👑 ${c.rank}番気になる`, textX, ty);
+      ty += crownSize + 8;
+    }
 
     // 予想テキスト
     if (c.yosou) {
@@ -488,6 +503,7 @@ function drawCharaCard(ctx, c, x, y, w, h, done) {
       const dw = img.width * scale, dh = img.height * scale;
       ctx.drawImage(img, imgX+(imgSize-dw)/2, imgY+(imgSize-dh)/2, dw, dh);
       ctx.restore();
+      drawCrownBadge(ctx, c, imgX, imgY);
       continueCard();
     };
     img.onerror = () => {
@@ -497,6 +513,7 @@ function drawCharaCard(ctx, c, x, y, w, h, done) {
       ctx.fillStyle = col.gcs;
       ctx.font = `bold ${Math.min(20, imgSize * 0.22)}px "Zen Maru Gothic"`;
       ctx.fillText(c.name || '？', imgX + imgSize/2, imgY + imgSize/2 + 7);
+      drawCrownBadge(ctx, c, imgX, imgY);
       continueCard();
     };
     img.src = c.imgData;
@@ -507,8 +524,27 @@ function drawCharaCard(ctx, c, x, y, w, h, done) {
     ctx.fillStyle = col.gcs;
     ctx.font = `bold ${Math.min(20, imgSize * 0.22)}px "Zen Maru Gothic"`;
     ctx.fillText(c.name || '？', imgX + imgSize/2, imgY + imgSize/2 + 7);
+    drawCrownBadge(ctx, c, imgX, imgY);
     continueCard();
   }
+}
+
+function drawCrownBadge(ctx, c, imgX, imgY) {
+  if (c.rank === null || c.rank === undefined) return;
+  const badgeR = 18;
+  const bx = imgX + badgeR + 4;
+  const by = imgY + badgeR + 4;
+  // バッジ背景
+  const crownBgColors = ['#e6b800','#aaaaaa','#c87830','#88aacc','#cc88aa','#88ccaa'];
+  ctx.fillStyle = crownBgColors[(c.rank - 1) % crownBgColors.length];
+  ctx.beginPath(); ctx.arc(bx, by, badgeR, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(bx, by, badgeR, 0, Math.PI*2); ctx.stroke();
+  // 王冠絵文字＋数字
+  ctx.textAlign = 'center';
+  ctx.font = `bold 14px "Zen Maru Gothic"`;
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`👑${c.rank}`, bx, by + 5);
 }
 
 function showResult() {
