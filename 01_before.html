@@ -133,7 +133,6 @@ body { padding-bottom: 80px; }
 <nav class="top-nav">
   <a href="index.html" class="logo">✨ otome sheet</a>
   <a href="01_before.html" class="current">プレイ前</a>
-  <a href="02_chara.html">個別キャラ</a>
   <a href="03_review.html">総評</a>
 </nav>
 
@@ -154,15 +153,15 @@ body { padding-bottom: 80px; }
   </div>
 
   <!-- ゲームタイトル -->
-  <div class="card" style="margin-bottom:14px;">
+  <div class="card" style="margin-bottom:6px;">
     <div class="card-title">♡ ゲームタイトル</div>
     <input type="text" id="game-title" placeholder="タイトルを入力（20文字以内）" maxlength="20" oninput="countChars(this,'cnt-game-title')">
     <div class="char-count"><span id="cnt-game-title">0</span>/20文字</div>
-    <div style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);">
-      <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【クレジット】</div>
-      <div>このツールは @usetoma0403 が個人制作した非公式ファンメイドツールです</div>
-      <div>各ゲームの著作権は各メーカーに帰属します</div>
-    </div>
+  </div>
+
+  <!-- クレジット（ゲームタイトル直下） -->
+  <div style="font-size:0.72rem;color:var(--muted);line-height:1.7;margin-bottom:14px;padding:8px 14px;background:#fffbee;border-radius:10px;border:1px solid #f5e0b0;">
+    <span style="font-weight:bold;color:#c09030;">【クレジット】</span>　このツールは @usetoma0403 が個人制作した非公式ファンメイドツールです。各ゲームの著作権は各メーカーに帰属します。
   </div>
 
   <!-- キャラリスト -->
@@ -172,7 +171,7 @@ body { padding-bottom: 80px; }
 
   <div class="gen-btn-wrap">
     <button class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;" onclick="generate()">
-      🌸 プレイ前予想シートを作成！
+      ♡ プレイ前予想シートを作成！
     </button>
   </div>
 
@@ -207,8 +206,8 @@ const COLORS = [
   { name:'black',   gc:'#606070', gcs:'#202030', gbg:'#f0f0f4' },
 ];
 
-// 1位=金, 2位=銀, 3位=銅
-const CROWN_COLORS = ['#c9a000', '#909090', '#b06030'];
+// 1位=ピンクゴールド, 2位=ラベンダー, 3位=ミント
+const CROWN_COLORS = ['#e8856a', '#9b7fd4', '#5ab8a0'];
 
 let charaCount = 0;
 let charas = [];
@@ -352,17 +351,17 @@ function generate() {
   const ctx = canvas.getContext('2d');
 
   // 背景
-  ctx.fillStyle = '#fffbfd';
+  ctx.fillStyle = '#fffef0';
   ctx.fillRect(0, 0, W, H);
 
   // 格子
-  ctx.strokeStyle = '#f0dde8';
+  ctx.strokeStyle = '#f0e8b0';
   ctx.lineWidth = 1;
   for (let x = 0; x <= W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
   for (let y = 0; y <= H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
 
   // 外枠
-  drawDashRect(ctx, 18, 18, W-36, H-36, '#e8c0d0', 3, 10);
+  drawDashRect(ctx, 18, 18, W-36, H-36, '#e0c840', 3, 10);
 
   // ヘッダー
   ctx.textAlign = 'center';
@@ -374,7 +373,7 @@ function generate() {
   ctx.fillStyle = '#3a2f3a';
   ctx.fillText(titleVal, W/2, 92);
 
-  ctx.strokeStyle = '#f0c0d8';
+  ctx.strokeStyle = '#e8d840';
   ctx.lineWidth = 1.5;
   ctx.setLineDash([6, 4]);
   ctx.beginPath(); ctx.moveTo(60, 110); ctx.lineTo(W-60, 110); ctx.stroke();
@@ -513,29 +512,29 @@ function drawCrownBadge(ctx, c, cardX, cardY) {
   if (c.rank === null || c.rank === undefined) return;
   const bgColor = CROWN_COLORS[c.rank - 1] || '#909090';
   const bx = cardX + 26, by = cardY + 26;
-  const size = 42; // バッジ全体サイズ
+  const size = 44;
 
   ctx.save();
 
-  // 影
-  ctx.shadowColor = 'rgba(0,0,0,0.3)';
-  ctx.shadowBlur = 6;
+  // 白いアウトライン（視認性向上）
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 8;
   ctx.shadowOffsetX = 1;
   ctx.shadowOffsetY = 2;
-
-  // 王冠シルエットそのものをバッジとして描く
-  drawCrownSilhouette(ctx, bx, by, size, bgColor);
-
+  drawCrownSilhouette(ctx, bx, by, size + 5, '#fff');
   ctx.shadowColor = 'transparent';
   ctx.shadowBlur = 0;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
 
-  // 王冠の内側（ベース部分）に数字
+  // 本体
+  drawCrownSilhouette(ctx, bx, by, size, bgColor);
+
+  // 数字（白・太字）
   ctx.textAlign = 'center';
   ctx.fillStyle = '#fff';
-  ctx.font = `bold ${size * 0.38}px "Zen Maru Gothic"`;
-  ctx.fillText(String(c.rank), bx, by + size * 0.28);
+  ctx.font = `bold ${Math.round(size * 0.4)}px "Zen Maru Gothic"`;
+  ctx.fillText(String(c.rank), bx, by + size * 0.3);
 
   ctx.restore();
 }
