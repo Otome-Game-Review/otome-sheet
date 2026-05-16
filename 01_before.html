@@ -284,10 +284,10 @@ function renderCharas() {
         </div>
         <div>
           <label>プレイ前の感想・期待<span class="optional-badge">任意</span></label>
-          <textarea rows="3" maxlength="100" placeholder="こんなキャラかな〜、ここが気になる！…"
+          <textarea rows="3" maxlength="85" placeholder="こんなキャラかな〜、ここが気になる！…"
             oninput="updateChara(${c.id},'yosou',this.value);document.getElementById('yosou-cnt-${c.id}').textContent=this.value.length"
             style="resize:none;">${c.yosou}</textarea>
-          <div class="char-count"><span id="yosou-cnt-${c.id}">${c.yosou.length}</span>/100文字</div>
+          <div class="char-count"><span id="yosou-cnt-${c.id}">${c.yosou.length}</span>/85文字</div>
         </div>
       </div>
     `;
@@ -339,7 +339,7 @@ function generate() {
   const rows = Math.ceil(charas.length / cols);
 
   const W = 900;
-  const HEADER_H = 180;
+  const HEADER_H = 162;
   const FOOTER_H = 40;
   const PAD = 28;
   const GAP = 14;
@@ -380,29 +380,24 @@ function generate() {
   ctx.fillStyle = '#3a2f3a';
   ctx.fillText(titleVal, W/2, 92);
 
-  // クレジット（ゲームタイトル直下）
-  ctx.font = '14px "Zen Maru Gothic"';
-  ctx.fillStyle = '#a09090';
-  ctx.fillText('designed by @usetoma0403 / 各ゲームの著作権は各メーカーに帰属します', W/2, 114);
-
   ctx.strokeStyle = '#e8d840';
   ctx.lineWidth = 1.5;
   ctx.setLineDash([6, 4]);
-  ctx.beginPath(); ctx.moveTo(60, 128); ctx.lineTo(W-60, 128); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(60, 110); ctx.lineTo(W-60, 110); ctx.stroke();
   ctx.setLineDash([]);
 
-  // サイン帯（03_review方式・区切り線の下）
+  // サイン帯
   const userSign = document.getElementById('user-sign').value.trim();
   ctx.fillStyle = '#f0e89088';
-  ctx.fillRect(50, 134, W-100, 52);
+  ctx.fillRect(50, 116, W-100, 52);
   ctx.textAlign = 'center';
   ctx.font = '20px "Zen Maru Gothic"';
   ctx.fillStyle = '#c09010';
   const signText = userSign ? `♡ otome sheet ♡　／　${userSign}` : '♡ otome sheet ♡';
-  ctx.fillText(signText, W/2, 158);
+  ctx.fillText(signText, W/2, 143);
   ctx.font = '11px "Zen Maru Gothic"';
   ctx.fillStyle = '#c09010bb';
-  ctx.fillText('「otome sheet」designed by @usetoma0403', W/2, 174);
+  ctx.fillText('「otome sheet」designed by @usetoma0403', W/2, 160);
 
   const promises = charas.map((c, i) => new Promise(resolve => {
     const col = i % cols;
@@ -413,10 +408,6 @@ function generate() {
   }));
 
   Promise.all(promises).then(() => {
-    ctx.textAlign = 'center';
-    ctx.font = '13px "Zen Maru Gothic"';
-    ctx.fillStyle = '#d4789a';
-    ctx.fillText('♡ otome sheet ♡　designed by @usetoma0403', W/2, H - 14);
     showResult();
   });
 }
