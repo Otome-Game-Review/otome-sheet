@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♡</text></svg>">
 <link rel="stylesheet" href="common.css">
 <style>
-body { padding-bottom: 80px; }
+body { padding-bottom: 80px; background: #fffef0; }
 .page-wrap { max-width: 640px; margin: 0 auto; padding: 20px 16px; }
 
 .page-header { text-align: center; margin-bottom: 24px; }
@@ -144,7 +144,7 @@ body { padding-bottom: 80px; }
   </div>
 
   <!-- 注意事項 -->
-  <div class="card" style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-bottom:14px;">
+  <div class="card" style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-bottom:6px;">
     <div>
       <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【注意事項】</div>
       <div>・画像を使用する場合は著作権にご配慮ください</div>
@@ -152,16 +152,18 @@ body { padding-bottom: 80px; }
     </div>
   </div>
 
+  <!-- クレジット（注意事項の下） -->
+  <div class="card" style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-bottom:14px;">
+    <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【クレジット】</div>
+    <div>このツールは @usetoma0403 が個人制作した非公式ファンメイドツールです</div>
+    <div>各ゲームの著作権は各メーカーに帰属します</div>
+  </div>
+
   <!-- ゲームタイトル -->
   <div class="card" style="margin-bottom:6px;">
     <div class="card-title">♡ ゲームタイトル</div>
     <input type="text" id="game-title" placeholder="タイトルを入力（20文字以内）" maxlength="20" oninput="countChars(this,'cnt-game-title')">
     <div class="char-count"><span id="cnt-game-title">0</span>/20文字</div>
-  </div>
-
-  <!-- クレジット（ゲームタイトル直下） -->
-  <div style="font-size:0.72rem;color:var(--muted);line-height:1.7;margin-bottom:14px;padding:8px 14px;background:#fffbee;border-radius:10px;border:1px solid #f5e0b0;">
-    <span style="font-weight:bold;color:#c09030;">【クレジット】</span>　このツールは @usetoma0403 が個人制作した非公式ファンメイドツールです。各ゲームの著作権は各メーカーに帰属します。
   </div>
 
   <!-- キャラリスト -->
