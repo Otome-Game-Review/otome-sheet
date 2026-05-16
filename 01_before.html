@@ -208,8 +208,8 @@ const COLORS = [
   { name:'black',   gc:'#606070', gcs:'#202030', gbg:'#f0f0f4' },
 ];
 
-// 1位=ピンクゴールド, 2位=ラベンダー, 3位=ミント
-const CROWN_COLORS = ['#e8856a', '#9b7fd4', '#5ab8a0'];
+// 1位=金, 2位=銀, 3位=銅
+const CROWN_COLORS = ['#e8b800', '#a8a8b8', '#c07840'];
 
 let charaCount = 0;
 let charas = [];
@@ -334,7 +334,7 @@ function generate() {
   const rows = Math.ceil(charas.length / cols);
 
   const W = 900;
-  const HEADER_H = 130;
+  const HEADER_H = 148;
   const FOOTER_H = 40;
   const PAD = 28;
   const GAP = 14;
@@ -342,7 +342,7 @@ function generate() {
   // カード幅から画像サイズを決定（正方形の70%の高さ → 本文を広く）
   const cardW = Math.floor((W - PAD*2 - GAP*(cols-1)) / cols);
   const IMG_H = Math.floor(cardW * 0.68); // 画像は幅の68%の高さ（少し小さく）
-  const TEXT_H = 150;
+  const TEXT_H = 190;
   const cardH = IMG_H + TEXT_H;
 
   const H = HEADER_H + rows * cardH + GAP * (rows-1) + PAD + FOOTER_H;
@@ -375,10 +375,15 @@ function generate() {
   ctx.fillStyle = '#3a2f3a';
   ctx.fillText(titleVal, W/2, 92);
 
+  // クレジット（ゲームタイトル直下）
+  ctx.font = '14px "Zen Maru Gothic"';
+  ctx.fillStyle = '#a09090';
+  ctx.fillText('designed by @usetoma0403 / 各ゲームの著作権は各メーカーに帰属します', W/2, 114);
+
   ctx.strokeStyle = '#e8d840';
   ctx.lineWidth = 1.5;
   ctx.setLineDash([6, 4]);
-  ctx.beginPath(); ctx.moveTo(60, 110); ctx.lineTo(W-60, 110); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(60, 128); ctx.lineTo(W-60, 128); ctx.stroke();
   ctx.setLineDash([]);
 
   const promises = charas.map((c, i) => new Promise(resolve => {
@@ -448,23 +453,23 @@ function drawCharaCard(ctx, c, x, y, w, h, imgH, done) {
     ctx.beginPath(); ctx.moveTo(x+pad, textY); ctx.lineTo(x+w-pad, textY); ctx.stroke();
     ctx.setLineDash([]);
 
-    let ty = textY + 22;
+    let ty = textY + 26;
 
     // キャラ名
     ctx.textAlign = 'center';
     ctx.fillStyle = col.gcs;
-    ctx.font = `bold 16px "Zen Maru Gothic"`;
+    ctx.font = `bold 20px "Zen Maru Gothic"`;
     ctx.fillText(c.name || '—', x + w/2, ty);
-    ty += 22;
+    ty += 28;
 
     // 感想
     if (c.yosou) {
       ctx.fillStyle = '#5a4a5a';
-      ctx.font = `12px "Zen Maru Gothic"`;
+      ctx.font = `18px "Zen Maru Gothic"`;
       ctx.textAlign = 'left';
       const lines = wrapText(ctx, c.yosou, w - pad*2 - 4);
       lines.forEach(line => {
-        if (ty < y + h - 6) { ctx.fillText(line, x + pad + 2, ty); ty += 17; }
+        if (ty < y + h - 8) { ctx.fillText(line, x + pad + 2, ty); ty += 26; }
       });
     }
     done();
@@ -487,8 +492,7 @@ function drawCharaCard(ctx, c, x, y, w, h, imgH, done) {
     ctx.closePath();
     ctx.clip();
     const scale = Math.max(w/img.width, imgH/img.height);
-    const dw = img.width*scale, dh = img.height*scale;
-    ctx.drawImage(img, x+(w-dw)/2, y+(imgH-dh)/2, dw, dh);
+    const dw = img.width*scale, dh = img.height*scale;    ctx.drawImage(img, x+(w-dw)/2, y+(imgH-dh)/2, dw, dh);
     ctx.restore();
 
     drawCrownBadge(ctx, c, x, y);
