@@ -143,27 +143,32 @@ body { padding-bottom: 80px; background: #fffef0; }
     <p style="font-size:0.72rem;color:var(--accent);margin-top:4px;font-weight:600;">最大9名まで登録できます</p>
   </div>
 
-  <!-- 注意事項 -->
-  <div class="card" style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-bottom:6px;">
-    <div>
+  <!-- 注意事項・クレジット（同じボックス） -->
+  <div class="card" style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-bottom:14px;">
+    <div style="margin-bottom:8px;">
       <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【注意事項】</div>
       <div>・画像を使用する場合は著作権にご配慮ください</div>
       <div>・他ユーザーや作品・キャラクターへの誹謗中傷はご遠慮ください</div>
     </div>
-  </div>
-
-  <!-- クレジット（注意事項の下） -->
-  <div class="card" style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-bottom:14px;">
-    <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【クレジット】</div>
-    <div>このツールは @usetoma0403 が個人制作した非公式ファンメイドツールです</div>
-    <div>各ゲームの著作権は各メーカーに帰属します</div>
+    <div>
+      <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【クレジット】</div>
+      <div>このツールは @usetoma0403 が個人制作した非公式ファンメイドツールです</div>
+      <div>各ゲームの著作権は各メーカーに帰属します</div>
+    </div>
   </div>
 
   <!-- ゲームタイトル -->
-  <div class="card" style="margin-bottom:6px;">
+  <div class="card" style="margin-bottom:14px;">
     <div class="card-title">♡ ゲームタイトル</div>
     <input type="text" id="game-title" placeholder="タイトルを入力（20文字以内）" maxlength="20" oninput="countChars(this,'cnt-game-title')">
     <div class="char-count"><span id="cnt-game-title">0</span>/20文字</div>
+  </div>
+
+  <!-- サイン -->
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">♡ サイン<span class="optional-badge">任意</span></div>
+    <input type="text" id="user-sign" placeholder="@あなたのXアカウント名など" maxlength="20" oninput="countChars(this,'cnt-user-sign')">
+    <div class="char-count"><span id="cnt-user-sign">0</span>/20文字</div>
   </div>
 
   <!-- キャラリスト -->
@@ -334,7 +339,7 @@ function generate() {
   const rows = Math.ceil(charas.length / cols);
 
   const W = 900;
-  const HEADER_H = 148;
+  const HEADER_H = 180;
   const FOOTER_H = 40;
   const PAD = 28;
   const GAP = 14;
@@ -342,7 +347,7 @@ function generate() {
   // カード幅から画像サイズを決定（正方形の70%の高さ → 本文を広く）
   const cardW = Math.floor((W - PAD*2 - GAP*(cols-1)) / cols);
   const IMG_H = Math.floor(cardW * 0.68); // 画像は幅の68%の高さ（少し小さく）
-  const TEXT_H = 190;
+  const TEXT_H = 210;
   const cardH = IMG_H + TEXT_H;
 
   const H = HEADER_H + rows * cardH + GAP * (rows-1) + PAD + FOOTER_H;
@@ -385,6 +390,19 @@ function generate() {
   ctx.setLineDash([6, 4]);
   ctx.beginPath(); ctx.moveTo(60, 128); ctx.lineTo(W-60, 128); ctx.stroke();
   ctx.setLineDash([]);
+
+  // サイン帯（03_review方式・区切り線の下）
+  const userSign = document.getElementById('user-sign').value.trim();
+  ctx.fillStyle = '#f0e89088';
+  ctx.fillRect(50, 134, W-100, 52);
+  ctx.textAlign = 'center';
+  ctx.font = '20px "Zen Maru Gothic"';
+  ctx.fillStyle = '#c09010';
+  const signText = userSign ? `♡ otome sheet ♡　／　${userSign}` : '♡ otome sheet ♡';
+  ctx.fillText(signText, W/2, 158);
+  ctx.font = '11px "Zen Maru Gothic"';
+  ctx.fillStyle = '#c09010bb';
+  ctx.fillText('「otome sheet」designed by @usetoma0403', W/2, 174);
 
   const promises = charas.map((c, i) => new Promise(resolve => {
     const col = i % cols;
@@ -491,7 +509,7 @@ function drawCharaCard(ctx, c, x, y, w, h, imgH, done) {
     ctx.quadraticCurveTo(x, y, x+14, y);
     ctx.closePath();
     ctx.clip();
-    const scale = Math.max(w/img.width, imgH/img.height);
+    const scale = Math.min(w/img.width, imgH/img.height);
     const dw = img.width*scale, dh = img.height*scale;    ctx.drawImage(img, x+(w-dw)/2, y+(imgH-dh)/2, dw, dh);
     ctx.restore();
 
