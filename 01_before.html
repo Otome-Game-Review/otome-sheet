@@ -260,16 +260,6 @@ function renderCharas() {
               <input type="text" value="${c.name}" maxlength="10" placeholder="名前を入力（10文字以内）" oninput="updateChara(${c.id},'name',this.value)">
             </div>
             <div>
-              <label>キャラカラー</label>
-              <div class="color-palette-sm">
-                ${COLORS.map(col => `
-                  <div class="color-dot-sm ${col.name === c.color.name ? 'active' : ''}"
-                    style="background:${col.gc};"
-                    onclick="setColor(${c.id},'${col.name}')"></div>
-                `).join('')}
-              </div>
-            </div>
-            <div>
               <label>気になる順位</label>
               <select onchange="updateChara(${c.id},'rank',this.value===''?null:parseInt(this.value));renderCharas()">
                 <option value="" ${c.rank===null?'selected':''}>選択しない</option>
