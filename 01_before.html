@@ -357,18 +357,20 @@ function generate() {
   canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  // 背景
-  ctx.fillStyle = '#fffef0';
+  // 背景（白）
+  ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
 
-  // 格子
-  ctx.strokeStyle = '#f0e8b0';
-  ctx.lineWidth = 1;
-  for (let x = 0; x <= W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-  for (let y = 0; y <= H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  // ノート風格子（水色点線）
+  ctx.strokeStyle = '#b8d8f0';
+  ctx.lineWidth = 0.8;
+  ctx.setLineDash([2, 3]);
+  for (let x = 0; x <= W; x += 30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y <= H; y += 30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  ctx.setLineDash([]);
 
-  // 外枠
-  drawDashRect(ctx, 18, 18, W-36, H-36, '#e0c840', 3, 10);
+  // 外枠（水色）
+  drawDashRect(ctx, 18, 18, W-36, H-36, '#7ab8e0', 2.5, 10);
 
   // ヘッダー
   ctx.textAlign = 'center';
@@ -380,7 +382,7 @@ function generate() {
   ctx.fillStyle = '#3a2f3a';
   ctx.fillText(titleVal, W/2, 92);
 
-  ctx.strokeStyle = '#e8d840';
+  ctx.strokeStyle = '#7ab8e0';
   ctx.lineWidth = 1.5;
   ctx.setLineDash([6, 4]);
   ctx.beginPath(); ctx.moveTo(60, 110); ctx.lineTo(W-60, 110); ctx.stroke();
@@ -388,15 +390,15 @@ function generate() {
 
   // サイン帯
   const userSign = document.getElementById('user-sign').value.trim();
-  ctx.fillStyle = '#f0e89088';
+  ctx.fillStyle = '#e8f4fc88';
   ctx.fillRect(50, 116, W-100, 52);
   ctx.textAlign = 'center';
   ctx.font = '20px "Zen Maru Gothic"';
-  ctx.fillStyle = '#c09010';
+  ctx.fillStyle = '#4a90c0';
   const signText = userSign ? `♡ otome sheet ♡　／　${userSign}` : '♡ otome sheet ♡';
   ctx.fillText(signText, W/2, 143);
   ctx.font = '11px "Zen Maru Gothic"';
-  ctx.fillStyle = '#c09010bb';
+  ctx.fillStyle = '#4a90c0bb';
   ctx.fillText('「otome sheet」designed by @usetoma0403', W/2, 160);
 
   const promises = charas.map((c, i) => new Promise(resolve => {
@@ -417,31 +419,22 @@ function drawCharaCard(ctx, c, x, y, w, h, imgH, done) {
   const pad = 8;
   const textH = h - imgH;
 
-  // カード背景
-  ctx.fillStyle = col.gbg;
+  // カード背景（白）
+  ctx.fillStyle = '#ffffff';
   roundRect(ctx, x, y, w, h, 14); ctx.fill();
 
-  // 格子模様
-  ctx.save();
-  ctx.beginPath(); roundRect(ctx, x, y, w, h, 14); ctx.clip();
-  ctx.strokeStyle = col.gc + '55';
-  ctx.lineWidth = 1;
-  for (let gx = x; gx <= x+w; gx += 20) { ctx.beginPath(); ctx.moveTo(gx,y); ctx.lineTo(gx,y+h); ctx.stroke(); }
-  for (let gy = y; gy <= y+h; gy += 20) { ctx.beginPath(); ctx.moveTo(x,gy); ctx.lineTo(x+w,gy); ctx.stroke(); }
-  ctx.restore();
-
-  // カード枠
-  ctx.strokeStyle = col.gcs;
-  ctx.lineWidth = 2;
-  ctx.setLineDash([6, 4]);
+  // カード枠（薄いグレー）
+  ctx.strokeStyle = '#d0d8e0';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 4]);
   roundRect(ctx, x, y, w, h, 14); ctx.stroke();
   ctx.setLineDash([]);
 
   const textY = y + imgH;
 
   const drawText = () => {
-    // テキスト背景
-    ctx.fillStyle = col.gbg;
+    // テキスト背景（白）
+    ctx.fillStyle = '#ffffff';
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(x, textY);
@@ -455,8 +448,8 @@ function drawCharaCard(ctx, c, x, y, w, h, imgH, done) {
     ctx.fill();
     ctx.restore();
 
-    // 境界線
-    ctx.strokeStyle = col.gcs + '66';
+    // 境界線（水色）
+    ctx.strokeStyle = '#b8d8f0';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 3]);
     ctx.beginPath(); ctx.moveTo(x+pad, textY); ctx.lineTo(x+w-pad, textY); ctx.stroke();
@@ -464,9 +457,9 @@ function drawCharaCard(ctx, c, x, y, w, h, imgH, done) {
 
     let ty = textY + 26;
 
-    // キャラ名
+    // キャラ名（水色系固定色）
     ctx.textAlign = 'center';
-    ctx.fillStyle = col.gcs;
+    ctx.fillStyle = '#4a90c0';
     ctx.font = `bold 20px "Zen Maru Gothic"`;
     ctx.fillText(c.name || '—', x + w/2, ty);
     ty += 28;
