@@ -274,7 +274,7 @@ function renderCharas() {
         </div>
         <div>
           <label>プレイ前の感想・期待<span class="optional-badge">任意</span></label>
-          <textarea rows="3" maxlength="85" placeholder="こんなキャラかな〜、ここが気になる！…"
+          <textarea rows="3" maxlength="85" placeholder="プレイ前の印象・予想・気になったポイントなど"
             oninput="updateChara(${c.id},'yosou',this.value);document.getElementById('yosou-cnt-${c.id}').textContent=this.value.length"
             style="resize:none;">${c.yosou}</textarea>
           <div class="char-count"><span id="yosou-cnt-${c.id}">${c.yosou.length}</span>/85文字</div>
@@ -340,7 +340,7 @@ function generate() {
   const TEXT_H = 210;
   const cardH = IMG_H + TEXT_H;
 
-  const H = HEADER_H + rows * cardH + GAP * (rows-1) + PAD + FOOTER_H;
+  const H = HEADER_H + rows * cardH + 16 * (rows-1) + PAD + FOOTER_H;
 
   const canvas = document.getElementById('preview-canvas');
   canvas.width = W;
@@ -395,7 +395,7 @@ function generate() {
     const col = i % cols;
     const row = Math.floor(i / cols);
     const cx = PAD + col * (cardW + GAP);
-    const cy = HEADER_H + row * (cardH + GAP);
+    const cy = HEADER_H + row * (cardH + 16);
     drawCharaCard(ctx, c, cx, cy, cardW, cardH, IMG_H, resolve);
   }));
 
