@@ -337,7 +337,7 @@ function generate() {
   // カード幅から画像サイズを決定（正方形の70%の高さ → 本文を広く）
   const cardW = Math.floor((W - PAD*2 - GAP*(cols-1)) / cols);
   const IMG_H = Math.floor(cardW * 0.68); // 画像は幅の68%の高さ（少し小さく）
-  const TEXT_H = 210;
+  const TEXT_H = 230;
   const cardH = IMG_H + TEXT_H;
 
   const H = HEADER_H + rows * cardH + 16 * (rows-1) + PAD + FOOTER_H;
@@ -461,7 +461,7 @@ function drawCharaCard(ctx, c, x, y, w, h, imgH, done) {
       ctx.textAlign = 'left';
       const lines = wrapText(ctx, c.yosou, w - pad*2 - 4);
       lines.forEach(line => {
-        if (ty < y + h - 8) { ctx.fillText(line, x + pad + 2, ty); ty += 26; }
+        if (ty < y + h - 8) { ctx.fillText(line, x + pad + 2, ty); ty += 28; }
       });
     }
     done();
