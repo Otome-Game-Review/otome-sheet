@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プレイ前予想シート | otome sheet</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♡</text></svg>">
+<link rel="stylesheet" href="common.css">
+<style>
+body { padding-bottom: 80px; background: #fffef0; }
+.page-wrap { max-width: 640px; margin: 0 auto; padding: 20px 16px; }
+
+.page-header { text-align: center; margin-bottom: 24px; }
+.page-header h1 { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+.page-header p { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+.optional-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.add-chara-btn {
+  width: 100%;
+  padding: 12px;
+  border: 2.5px dashed var(--line);
+  border-radius: 16px;
+  background: white;
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 16px;
+}
+.add-chara-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+
+.chara-card {
+  background: white;
+  border: 2.5px dashed var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.chara-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.chara-num {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.remove-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--muted);
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: color 0.15s;
+}
+.remove-btn:hover { color: #e05050; }
+
+.chara-body { display: flex; flex-direction: column; gap: 10px; }
+
+.chara-img-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.upload-area {
+  width: 110px;
+  height: 110px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.chara-info-col { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+
+.color-palette-sm { display: flex; flex-wrap: wrap; gap: 5px; }
+.color-dot-sm {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.12s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+.color-dot-sm:hover { transform: scale(1.15); }
+.color-dot-sm.active { border-color: var(--ink); transform: scale(1.18); }
+
+.char-count {
+  text-align: right;
+  font-size: 0.68rem;
+  color: #b0a0b0;
+  margin-top: 3px;
+}
+
+.gen-btn-wrap { margin: 20px 0; }
+
+#preview-canvas { display: none; }
+.preview-img {
+  max-width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  border: 2px solid var(--line);
+  display: none;
+  margin-top: 16px;
+}
+.dl-btn-wrap { margin-top: 14px; display: none; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="logo">otome sheet✧*｡</span>
+  <a href="01_before.html" class="current">プレイ前</a>
+  <a href="03_review.html">総評</a>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>♡ プレイ前予想シート</h1>
+    <p>プレイ前の期待・予想を記録しよう！</p>
+  </div>
+
+  <!-- 注意事項・クレジット（同じボックス） -->
+  <div class="card" style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-bottom:14px;">
+    <div style="margin-bottom:8px;">
+      <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【注意事項】</div>
+      <div>・画像を使用する場合は著作権にご配慮ください</div>
+      <div>・他ユーザーや作品・キャラクターへの誹謗中傷はご遠慮ください</div>
+    </div>
+    <div>
+      <div style="font-weight:bold;margin-bottom:4px;color:var(--primary);">【クレジット】</div>
+      <div>このツールは @usetoma0403 が個人制作した非公式ファンメイドツールです</div>
+      <div>各ゲームの著作権は各メーカーに帰属します</div>
+    </div>
+  </div>
+
+  <!-- ゲームタイトル -->
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">♡ ゲームタイトル</div>
+    <input type="text" id="game-title" placeholder="タイトルを入力（20文字以内）" maxlength="20" oninput="countChars(this,'cnt-game-title')">
+    <div class="char-count"><span id="cnt-game-title">0</span>/20文字</div>
+  </div>
+
+  <!-- サイン -->
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">♡ サイン<span class="optional-badge">任意</span></div>
+    <input type="text" id="user-sign" placeholder="@あなたのXアカウント名など" maxlength="20" oninput="countChars(this,'cnt-user-sign')">
+    <div class="char-count"><span id="cnt-user-sign">0</span>/20文字</div>
+  </div>
+
+  <!-- キャラリスト -->
+  <div id="chara-list"></div>
+
+  <button class="add-chara-btn" id="add-btn" onclick="addChara()">＋ キャラを追加する</button>
+
+  <div class="gen-btn-wrap">
+    <button class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;" onclick="generate()">
+      ♡ プレイ前予想シートを作成！
+    </button>
+  </div>
+
+  <canvas id="preview-canvas"></canvas>
+  <img id="preview-img" class="preview-img">
+  <div class="dl-btn-wrap" id="dl-wrap">
+    <button class="btn btn-primary" style="width:100%;" onclick="download()">⬇️ ダウンロード</button>
+  </div>
+</div>
+
+<script>
+function countChars(el, id) {
+  document.getElementById(id).textContent = el.value.length;
+}
+
+const COLORS = [
+  { name:'pink',    gc:'#ffb7c5', gcs:'#ff85a2', gbg:'#fff0f4' },
+  { name:'red',     gc:'#ff8080', gcs:'#e63c3c', gbg:'#fff0f0' },
+  { name:'orange',  gc:'#ffb37a', gcs:'#f07830', gbg:'#fff5ee' },
+  { name:'yellow',  gc:'#ffe066', gcs:'#e6c000', gbg:'#fffbee' },
+  { name:'lime',    gc:'#b8f07a', gcs:'#70c020', gbg:'#f5ffee' },
+  { name:'green',   gc:'#7ad4a0', gcs:'#30a060', gbg:'#eefff4' },
+  { name:'mint',    gc:'#7ae8d4', gcs:'#20b090', gbg:'#eefffa' },
+  { name:'sky',     gc:'#80d4ff', gcs:'#30a0e0', gbg:'#eef8ff' },
+  { name:'blue',    gc:'#80a8ff', gcs:'#3060e0', gbg:'#eef2ff' },
+  { name:'lavender',gc:'#c0a8ff', gcs:'#7050e0', gbg:'#f4f0ff' },
+  { name:'purple',  gc:'#d480ff', gcs:'#9030d0', gbg:'#f9eeff' },
+  { name:'magenta', gc:'#ff80d4', gcs:'#d030a0', gbg:'#ffeeff' },
+  { name:'brown',   gc:'#d4a870', gcs:'#a07030', gbg:'#fdf5ec' },
+  { name:'gold',    gc:'#e8c44a', gcs:'#c09010', gbg:'#fffbea' },
+  { name:'gray',    gc:'#b0b0c8', gcs:'#707090', gbg:'#f4f4f8' },
+  { name:'black',   gc:'#606070', gcs:'#202030', gbg:'#f0f0f4' },
+];
+
+// 1位=金, 2位=銀, 3位=銅
+const CROWN_COLORS = ['#e8b800', '#a8a8b8', '#c07840'];
+
+let charaCount = 0;
+let charas = [];
+
+function addChara() {
+  if (charas.length >= 9) { alert('キャラは最大9名までです！'); return; }
+  charaCount++;
+  charas.push({ id: charaCount, name:'', imgData:null, color: COLORS[0], yosou:'', rank: null });
+  renderCharas();
+}
+
+function removeChara(id) {
+  charas = charas.filter(c => c.id !== id);
+  renderCharas();
+}
+
+function renderCharas() {
+  const list = document.getElementById('chara-list');
+  list.innerHTML = '';
+  charas.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'chara-card';
+    div.innerHTML = `
+      <div class="chara-card-header">
+        <span class="chara-num">キャラ ${i+1}</span>
+        <button class="remove-btn" onclick="removeChara(${c.id})">✕</button>
+      </div>
+      <div class="chara-body">
+        <div class="chara-img-row">
+          <div>
+            <div class="upload-area" id="upload-${c.id}" onclick="triggerUpload(${c.id})">
+              ${c.imgData
+                ? `<img src="${c.imgData}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`
+                : `<div class="upload-placeholder">📷<br>画像<br>（必須）</div>`}
+              <input type="file" id="file-${c.id}" accept="image/*" onchange="handleImg(${c.id}, this)">
+            </div>
+            <p style="font-size:0.6rem;color:#b0a0b0;text-align:center;margin-top:3px;line-height:1.4;">正方形JPG/PNG推奨</p>
+            ${c.imgData ? `<button class="btn btn-outline btn-sm" style="font-size:0.65rem;padding:3px 8px;width:110px;margin-top:2px;" onclick="clearImg(${c.id})">✕ 削除</button>` : ''}
+          </div>
+          <div class="chara-info-col">
+            <div>
+              <label>キャラ名（10文字以内）</label>
+              <input type="text" value="${c.name}" maxlength="10" placeholder="名前を入力（10文字以内）" oninput="updateChara(${c.id},'name',this.value)">
+            </div>
+            <div>
+              <label>気になる順位</label>
+              <select onchange="updateChara(${c.id},'rank',this.value===''?null:parseInt(this.value));renderCharas()">
+                <option value="" ${c.rank===null?'selected':''}>選択しない</option>
+                ${[1,2,3].map(n => {
+                  const used = charas.some(x => x.id !== c.id && x.rank === n);
+                  const labels = ['👑 1番気になる！','👑 2番気になる','👑 3番気になる'];
+                  return `<option value="${n}" ${c.rank===n?'selected':''} ${used?'disabled':''}>${labels[n-1]}${used?' （使用中）':''}</option>`;
+                }).join('')}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label>プレイ前の感想・期待<span class="optional-badge">任意</span></label>
+          <textarea rows="3" maxlength="85" placeholder="プレイ前の印象・予想・気になったポイントなど"
+            oninput="updateChara(${c.id},'yosou',this.value);document.getElementById('yosou-cnt-${c.id}').textContent=this.value.length"
+            style="resize:none;">${c.yosou}</textarea>
+          <div class="char-count"><span id="yosou-cnt-${c.id}">${c.yosou.length}</span>/85文字</div>
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+  document.getElementById('add-btn').style.display = charas.length >= 9 ? 'none' : 'block';
+}
+
+function updateChara(id, key, val) {
+  const c = charas.find(x => x.id === id);
+  if (c) c[key] = val;
+}
+
+function setColor(id, colorName) {
+  const c = charas.find(x => x.id === id);
+  if (c) { c.color = COLORS.find(col => col.name === colorName); renderCharas(); }
+}
+
+function triggerUpload(id) { document.getElementById(`file-${id}`).click(); }
+
+function handleImg(id, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const c = charas.find(x => x.id === id);
+    if (c) { c.imgData = e.target.result; renderCharas(); }
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearImg(id) {
+  const c = charas.find(x => x.id === id);
+  if (c) { c.imgData = null; renderCharas(); }
+}
+
+// ─── 画像生成 ───
+function generate() {
+  const titleVal = document.getElementById('game-title').value.trim();
+  if (!titleVal) { alert('ゲームタイトルを入力してください！'); return; }
+  if (charas.length === 0) { alert('キャラを1名以上追加してください！'); return; }
+  const missingImg = charas.find(c => !c.imgData);
+  if (missingImg) { alert('全キャラの画像を設定してください！（必須）'); return; }
+  const missingName = charas.find(c => !c.name.trim());
+  if (missingName) { alert('全キャラのキャラ名を入力してください！'); return; }
+
+  // レイアウト: 常に3列（最大9名＝3×3）
+  const cols = charas.length <= 2 ? 2 : 3;
+  const rows = Math.ceil(charas.length / cols);
+
+  const W = 900;
+  const HEADER_H = 182;
+  const FOOTER_H = 20;
+  const PAD = 20;
+  const GAP = 14;
+
+  // カード幅から画像サイズを決定（正方形の70%の高さ → 本文を広く）
+  const cardW = Math.floor((W - PAD*2 - GAP*(cols-1)) / cols);
+  const IMG_H = Math.floor(cardW * 0.68); // 画像は幅の68%の高さ（少し小さく）
+  const TEXT_H = 230;
+  const cardH = IMG_H + TEXT_H;
+
+  const H = HEADER_H + rows * cardH + 16 * (rows-1) + PAD + FOOTER_H;
+
+  const canvas = document.getElementById('preview-canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // 背景（白）
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+
+  // ノート風格子（水色点線）
+  ctx.strokeStyle = '#b8d8f0';
+  ctx.lineWidth = 0.8;
+  ctx.setLineDash([2, 3]);
+  for (let x = 0; x <= W; x += 30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y <= H; y += 30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  ctx.setLineDash([]);
+
+  // 外枠（水色）
+  drawDashRect(ctx, 18, 18, W-36, H-36, '#7ab8e0', 2.5, 10);
+
+  // ヘッダー
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#7ab8e0';
+  ctx.font = 'bold 25px "Zen Maru Gothic"';
+  ctx.fillText('♡ プレイ前予想シート', W/2, 52);
+
+  ctx.font = 'bold 36px "Zen Maru Gothic"';
+  ctx.fillStyle = '#3a2f3a';
+  ctx.fillText(titleVal, W/2, 92);
+
+  ctx.strokeStyle = '#7ab8e0';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath(); ctx.moveTo(60, 110); ctx.lineTo(W-60, 110); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // サイン帯
+  const userSign = document.getElementById('user-sign').value.trim();
+  ctx.fillStyle = '#e8f4fc88';
+  ctx.fillRect(50, 116, W-100, 52);
+  ctx.textAlign = 'center';
+  ctx.font = '20px "Zen Maru Gothic"';
+  ctx.fillStyle = '#4a90c0';
+  const signText = userSign ? `♡ otome sheet ♡　／　${userSign}` : '♡ otome sheet ♡';
+  ctx.fillText(signText, W/2, 143);
+  ctx.font = '11px "Zen Maru Gothic"';
+  ctx.fillStyle = '#4a90c0bb';
+  ctx.fillText('「otome sheet」designed by @usetoma0403', W/2, 160);
+
+  const promises = charas.map((c, i) => new Promise(resolve => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const cx = PAD + col * (cardW + GAP);
+    const cy = HEADER_H + row * (cardH + 16);
+    drawCharaCard(ctx, c, cx, cy, cardW, cardH, IMG_H, resolve);
+  }));
+
+  Promise.all(promises).then(() => {
+    showResult();
+  });
+}
+
+function drawCharaCard(ctx, c, x, y, w, h, imgH, done) {
+  const col = c.color;
+  const pad = 8;
+  const textH = h - imgH;
+
+  // カード背景（白）
+  ctx.fillStyle = '#ffffff';
+  roundRect(ctx, x, y, w, h, 14); ctx.fill();
+
+  // カード枠（薄いグレー）
+  ctx.strokeStyle = '#d0d8e0';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 4]);
+  roundRect(ctx, x, y, w, h, 14); ctx.stroke();
+  ctx.setLineDash([]);
+
+  const textY = y + imgH;
+
+  const drawText = () => {
+    // テキスト背景（白）
+    ctx.fillStyle = '#ffffff';
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x, textY);
+    ctx.lineTo(x+w, textY);
+    ctx.lineTo(x+w, y+h-14);
+    ctx.quadraticCurveTo(x+w, y+h, x+w-14, y+h);
+    ctx.lineTo(x+14, y+h);
+    ctx.quadraticCurveTo(x, y+h, x, y+h-14);
+    ctx.lineTo(x, textY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // 境界線（水色）
+    ctx.strokeStyle = '#b8d8f0';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(x+pad, textY); ctx.lineTo(x+w-pad, textY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    let ty = textY + 26;
+
+    // キャラ名（水色系固定色）
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#4a90c0';
+    ctx.font = `bold 20px "Zen Maru Gothic"`;
+    ctx.fillText(c.name || '—', x + w/2, ty);
+    ty += 28;
+
+    // 感想
+    if (c.yosou) {
+      ctx.fillStyle = '#5a4a5a';
+      ctx.font = `18px "Zen Maru Gothic"`;
+      ctx.textAlign = 'left';
+      const lines = wrapText(ctx, c.yosou, w - pad*2 - 4);
+      lines.forEach(line => {
+        if (ty < y + h - 8) { ctx.fillText(line, x + pad + 2, ty); ty += 28; }
+      });
+    }
+    done();
+  };
+
+  // 画像描画
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    // 画像を正方形でクリップ
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x+14, y);
+    ctx.lineTo(x+w-14, y);
+    ctx.quadraticCurveTo(x+w, y, x+w, y+14);
+    ctx.lineTo(x+w, y+imgH);
+    ctx.lineTo(x, y+imgH);
+    ctx.lineTo(x, y+14);
+    ctx.quadraticCurveTo(x, y, x+14, y);
+    ctx.closePath();
+    ctx.clip();
+    const scale = Math.min(w/img.width, imgH/img.height);
+    const dw = img.width*scale, dh = img.height*scale;    ctx.drawImage(img, x+(w-dw)/2, y+(imgH-dh)/2, dw, dh);
+    ctx.restore();
+
+    drawCrownBadge(ctx, c, x, y);
+    drawText();
+  };
+  img.onerror = () => {
+    ctx.fillStyle = col.gc + '80';
+    ctx.save();
+    ctx.beginPath(); roundRect(ctx, x, y, w, imgH, 14); ctx.clip();
+    ctx.fillRect(x, y, w, imgH);
+    ctx.restore();
+    ctx.textAlign = 'center'; ctx.fillStyle = col.gcs;
+    ctx.font = `bold 18px "Zen Maru Gothic"`;
+    ctx.fillText(c.name || '？', x+w/2, y+imgH/2+7);
+    drawCrownBadge(ctx, c, x, y);
+    drawText();
+  };
+  img.src = c.imgData;
+}
+
+// 王冠バッジ（数字を王冠内部に）
+function drawCrownBadge(ctx, c, cardX, cardY) {
+  if (c.rank === null || c.rank === undefined) return;
+  const bgColor = CROWN_COLORS[c.rank - 1] || '#909090';
+  const bx = cardX + 26, by = cardY + 26;
+  const size = 44;
+
+  ctx.save();
+
+  // 白いアウトライン（視認性向上）
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetX = 1;
+  ctx.shadowOffsetY = 2;
+  drawCrownSilhouette(ctx, bx, by, size + 5, '#fff');
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  // 本体
+  drawCrownSilhouette(ctx, bx, by, size, bgColor);
+
+  // 数字（白・太字）
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#fff';
+  ctx.font = `bold ${Math.round(size * 0.4)}px "Zen Maru Gothic"`;
+  ctx.fillText(String(c.rank), bx, by + size * 0.3);
+
+  ctx.restore();
+}
+
+function drawCrownSilhouette(ctx, cx, cy, size, color) {
+  // 添付画像の王冠に近い形: 3つのボール＋台形ベース
+  const s = size / 40;
+
+  // ── ベース（台形）──
+  const baseTop = cy;        // ベース上端
+  const baseBot = cy + 15*s; // ベース下端
+  const baseL   = cx - 18*s;
+  const baseR   = cx + 18*s;
+  const baseR2  = 4*s;       // 角丸
+
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  // 台形: 上辺と下辺
+  ctx.moveTo(baseL + baseR2, baseTop);
+  ctx.lineTo(baseR - baseR2, baseTop);
+  ctx.quadraticCurveTo(baseR, baseTop, baseR, baseTop + baseR2);
+  ctx.lineTo(baseR, baseBot - baseR2);
+  ctx.quadraticCurveTo(baseR, baseBot, baseR - baseR2, baseBot);
+  ctx.lineTo(baseL + baseR2, baseBot);
+  ctx.quadraticCurveTo(baseL, baseBot, baseL, baseBot - baseR2);
+  ctx.lineTo(baseL, baseTop + baseR2);
+  ctx.quadraticCurveTo(baseL, baseTop, baseL + baseR2, baseTop);
+  ctx.closePath();
+  ctx.fill();
+
+  // ── 三角形の山（左・中央・右）──
+  // 左山
+  ctx.beginPath();
+  ctx.moveTo(baseL, baseTop);
+  ctx.lineTo(baseL + 2*s, baseTop - 13*s);
+  ctx.lineTo(baseL + 14*s, baseTop);
+  ctx.closePath();
+  ctx.fill();
+
+  // 中央山（一番高い）
+  ctx.beginPath();
+  ctx.moveTo(cx - 10*s, baseTop);
+  ctx.lineTo(cx, baseTop - 20*s);
+  ctx.lineTo(cx + 10*s, baseTop);
+  ctx.closePath();
+  ctx.fill();
+
+  // 右山
+  ctx.beginPath();
+  ctx.moveTo(baseR - 14*s, baseTop);
+  ctx.lineTo(baseR - 2*s, baseTop - 13*s);
+  ctx.lineTo(baseR, baseTop);
+  ctx.closePath();
+  ctx.fill();
+
+  // ── ボール（左・中央・右）──
+  const ballR = 4*s;
+  // 左ボール
+  ctx.beginPath();
+  ctx.arc(baseL + 2*s, baseTop - 13*s, ballR, 0, Math.PI*2);
+  ctx.fill();
+  // 中央ボール
+  ctx.beginPath();
+  ctx.arc(cx, baseTop - 20*s, ballR, 0, Math.PI*2);
+  ctx.fill();
+  // 右ボール
+  ctx.beginPath();
+  ctx.arc(baseR - 2*s, baseTop - 13*s, ballR, 0, Math.PI*2);
+  ctx.fill();
+}
+
+function showResult() {
+  const canvas = document.getElementById('preview-canvas');
+  const img = document.getElementById('preview-img');
+  try {
+    img.src = '';
+    img.src = canvas.toDataURL('image/png');
+  } catch(e) {
+    alert('画像の生成に失敗しました。');
+    return;
+  }
+  img.style.display = 'block';
+  document.getElementById('dl-wrap').style.display = 'block';
+  img.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+function download() {
+  const canvas = document.getElementById('preview-canvas');
+  const title = document.getElementById('game-title').value || 'before';
+  const d = new Date();
+  const filename = `otome_before_${title}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.png`;
+  const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+  if (isIOS) {
+    const dataUrl = canvas.toDataURL('image/png');
+    const w = window.open();
+    w.document.write(`<html><head><title>${filename}</title></head><body style="margin:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;"><img src="${dataUrl}" style="max-width:100%;"><p style="color:#fff;font-size:14px;font-family:sans-serif;">画像を長押しして「写真に追加」で保存できます</p></body></html>`);
+    w.document.close();
+  } else {
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.download = filename;
+      a.href = url;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r=14) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+}
+
+function drawDashRect(ctx, x, y, w, h, color, lw, dash) {
+  ctx.strokeStyle = color; ctx.lineWidth = lw;
+  ctx.setLineDash([dash, dash/2]);
+  roundRect(ctx, x, y, w, h, 20); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function wrapText(ctx, text, maxW) {
+  const lines = [];
+  let cur = '';
+  for (const ch of String(text)) {
+    if (ch === '\n') { lines.push(cur); cur = ''; continue; }
+    if (ctx.measureText(cur+ch).width > maxW) { lines.push(cur); cur = ch; }
+    else cur += ch;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+addChara();
+</script>
+</body>
+</html>
