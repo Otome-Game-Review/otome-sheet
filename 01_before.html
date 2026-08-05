@@ -620,12 +620,25 @@ function showResult() {
 
 function download() {
   const canvas = document.getElementById('preview-canvas');
-  const a = document.createElement('a');
   const title = document.getElementById('game-title').value || 'before';
   const d = new Date();
-  a.download = `otome_before_${title}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.png`;
-  a.href = canvas.toDataURL('image/png');
-  a.click();
+  const filename = `otome_before_${title}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.png`;
+  const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+  if (isIOS) {
+    const dataUrl = canvas.toDataURL('image/png');
+    const w = window.open();
+    w.document.write(`<html><head><title>${filename}</title></head><body style="margin:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;"><img src="${dataUrl}" style="max-width:100%;"><p style="color:#fff;font-size:14px;font-family:sans-serif;">画像を長押しして「写真に追加」で保存できます</p></body></html>`);
+    w.document.close();
+  } else {
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.download = filename;
+      a.href = url;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
 }
 
 function roundRect(ctx, x, y, w, h, r=14) {
